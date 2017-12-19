@@ -1,4 +1,4 @@
-function charge_css_js(tab,index,call)
+function loadScript(tab,index,call)
 {
   if(typeof(index) == 'function')
   {
@@ -9,7 +9,12 @@ function charge_css_js(tab,index,call)
   if(typeof(tab) === 'string') tab = new Array(tab);
   if(typeof(tab[index]) === 'object')
   {
-    charge_css_js(tab[index][0],0,tab[index][1])
+    loadScript(tab[index][0],0,tab[index][1])
+    index++;
+  }
+  if(typeof(tab[index]) === 'function')
+  {
+    tab[index]();
     index++;
   }
   if(typeof(tab[index]) != typeof(undefined) )
@@ -30,7 +35,7 @@ function charge_css_js(tab,index,call)
         element.onload = function()
         { 
           var ind = index +1;
-          charge_css_js(tab,ind,call);
+          loadScript(tab,ind,call);
         }
       }
       else if (patt.test(tab['index']))
@@ -43,13 +48,13 @@ function charge_css_js(tab,index,call)
         lien.onload = function()
         {
           var ind = index+1;
-          charge_css_js(tab,ind,call);
+          loadScript(tab,ind,call);
         }
       }  
       else
       {
         var ind = index+1;
-        charge_css_js(tab,ind,call);
+        loadScript(tab,ind,call);
       }
     }
   }
