@@ -3,17 +3,12 @@
 	"description": "Script loading without callbacks",
 	"main": [
 		"dist/load_script.js",
-	
 	],
 	"dependencies": {
 	},
 	"devDependencies": {
-		"qunit": "~1.16.0"
 	},
 	"moduleType": [
-		"amd",
-		"globals",
-		"node"
 	],
 	"keywords": [
 		"chargement",
