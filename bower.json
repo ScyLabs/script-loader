@@ -2,13 +2,14 @@
 	"name": "script-loader",
 	"description": "Script loading without callbacks",
 	"main": [
-		"dist/load_script.js",
+		"dist/load_script.js"
 	],
 	"dependencies": {
 	},
 	"devDependencies": {
 	},
 	"moduleType": [
+		"javascript"
 	],
 	"keywords": [
 		"chargement",
