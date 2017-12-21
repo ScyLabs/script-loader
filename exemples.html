@@ -36,6 +36,9 @@
    			console.log('Chargement a partir de fancybox');
    		})
 
+      // Chargement de script avec 1 fonction qui se lance entre 2 script + 1 callback a la fin totale du chargement
+      loadScript(['js/jquery.min.js',function(){alert('fancy')},'js/lib.js'],function(){})
+
    		// Chargement de script , avec callback lié a un script en particulier
 
    		var callback = function(){
