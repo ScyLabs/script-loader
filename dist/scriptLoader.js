@@ -2,9 +2,10 @@ function loadScript(tab,index,call)
 {
   if(typeof(index) == 'function')
   {
+    
     call = index;index = 0;
   }
-  else if(typeof(index) == typeof(undefined)) index = 0;
+  else if(typeof(index) == typeof(undefined)) {index = 0;}
 
   if(typeof(tab) === 'string') tab = new Array(tab);
   if(typeof(tab[index]) === 'object')
@@ -19,9 +20,11 @@ function loadScript(tab,index,call)
   }
   if(typeof(tab[index]) != typeof(undefined) )
   {
+
     var patt = new RegExp(/\.js/);
     var pattcss = new RegExp(/\.css/);
     var yt = new RegExp(/player_api/);
+    
     if(index < tab.length)
     {
 
@@ -38,7 +41,7 @@ function loadScript(tab,index,call)
           loadScript(tab,ind,call);
         }
       }
-      else if (patt.test(tab['index']))
+      else if (pattcss.test(tab[index]))
       {
         var lien   = document.createElement('link');
         lien.href   = tab[index];
