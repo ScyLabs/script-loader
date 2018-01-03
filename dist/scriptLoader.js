@@ -33,6 +33,7 @@ function loadScript(tab,index,call)
         var element = document.createElement("script");
         element.src = tab[index];
         element.type = "text/javascript";
+        element.defer = "defer";
         document.body.appendChild(element);
 
         element.onload = function()
