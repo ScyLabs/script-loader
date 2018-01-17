@@ -10,8 +10,10 @@ function loadScript(tab,index,call)
   if(typeof(tab) === 'string') tab = new Array(tab);
   if(typeof(tab[index]) === 'object')
   {
-    loadScript(tab[index][0],0,tab[index][1])
-    index++;
+    loadScript(tab[index][0],0,tab[ index][1])
+    var tmp = tab[index];
+    tab[index] = tab[index][0];
+    var tmp_callback = tab[index][1];
   }
   if(typeof(tab[index]) === 'function')
   {
@@ -40,6 +42,9 @@ function loadScript(tab,index,call)
         { 
           var ind = index +1;
           loadScript(tab,ind,call);
+          if(typeof(tmp_callback) === "function")
+            tmp_callback();
+
         }
       }
       else if (pattcss.test(tab[index]))
@@ -53,6 +58,8 @@ function loadScript(tab,index,call)
         {
           var ind = index+1;
           loadScript(tab,ind,call);
+          if(typeof(tmp_callback) === "function")
+            tmp_callback();
         }
       }  
       else
