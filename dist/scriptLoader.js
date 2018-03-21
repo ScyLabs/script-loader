@@ -2,7 +2,7 @@ function loadScript(tab,index,call)
 {
   if(typeof(index) == 'function')
   {
-    
+
     call = index;index = 0;
   }
   else if(typeof(index) == typeof(undefined)) {index = 0;}
@@ -26,11 +26,13 @@ function loadScript(tab,index,call)
     var patt = new RegExp(/\.js/);
     var pattcss = new RegExp(/\.css/);
     var yt = new RegExp(/player_api/);
+    var analitics = new RegExp(/gtag\/js/);
+
     
     if(index < tab.length)
     {
 
-      if(patt.test(tab[index])|| yt.test(tab[index]))
+      if(patt.test(tab[index])|| yt.test(tab[index]) || analitics.test(tab[index]))
       {
         var element = document.createElement("script");
         element.src = tab[index];
