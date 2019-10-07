@@ -1,81 +1,197 @@
-function loadScript(tab,index,call)
-{
-  if(typeof(index) == 'function')
-  {
-
-    call = index;index = 0;
+(function(){
+  
+  /* Script Pattern */
+  const scriptPatern = {
+    package: null,
+    src: null,
+    callback : null,
+    loaded : false,
+    require: []
   }
-  else if(typeof(index) == typeof(undefined)) {index = 0;}
-
-  if(typeof(tab) === 'string') tab = new Array(tab);
-  if(typeof(tab[index]) === 'object')
-  {
-    loadScript(tab[index][0],0,tab[ index][1])
-    var tmp = tab[index];
-    tab[index] = tab[index][0];
-    var tmp_callback = tab[index][1];
+  /* ScriptLoader pattern */
+  const defaults = {
+    scripts: [],
   }
-  if(typeof(tab[index]) === 'function')
-  {
-    tab[index]();
-    index++;
-  }
-  if(typeof(tab[index]) != typeof(undefined) )
-  {
-
-    var patt = new RegExp(/\.js/);
-    var pattcss = new RegExp(/\.css/);
-    var yt = new RegExp(/player_api/);
-    var analitics = new RegExp(/gtag\/js/);
-
     
-    if(index < tab.length)
-    {
+  /* ScriptLoader __constructor*/
+  this.ScriptLoader = function(opts) {
+    
+    this.inProgress = false
+    this.scripts = new Array();
+   
+    var config = {};
+    
+    /*Add script in ScriptLoader object*/
+    this.add = function(script){
+      var scriptLoader = this;
+      // if script is array , forEach and call add
+      if(typeof(script.push) !== 'undefined'){
+        script.forEach(function(object){
+          scriptLoader.add(object);
+        });
+        return;
+      }
+      
+      if(typeof(script) !== 'object')
+        return;
+      // Define defaults
+      setDefaults(scriptPatern,script);
+      
+      // if object don't have script and script.src is not null
+      if(script.src !== null && !this.has(script)){
+        // If script has requirements
+        if(script.require.length > 0){
+          // Load requirements
+          script.require.forEach(function(require){
+            require.sources.forEach(function(source){
+              var objScript = {
+                src: source,
+              }
+              scriptLoader.add(objScript);
+            }) 
+          })
+        }
+        // Add script
+        this.scripts.push(script);
+      }
+ 
+    }
+    
+    
+    /* Object has script */
+    this.has = function(script){
+      /* Object comparaison */
 
-      if(patt.test(tab[index])|| yt.test(tab[index]) || analitics.test(tab[index]))
-      {
-        var element = document.createElement("script");
-        element.src = tab[index];
-        element.type = "text/javascript";
-        element.defer = "defer";
-        document.body.appendChild(element);
+      if(typeof(script) !== 'object')
+        return false;
+      
+      result = false;
+      this.scripts.forEach(function(object){
+        if(object.src === script.src) {
+          result = true;
+        }
+      });
 
-        element.onload = function()
-        { 
-          var ind = index +1;
-          loadScript(tab,ind,call);
-          if(typeof(tmp_callback) === "function")
-            tmp_callback();
+      return result;
+    }
+    /* load Alls scripts not loaded */
+    this.load = function(){
+      
+      if(this.scripts.length === 0 || this.inProgress === true)
+        return;
+      this.inProgress = true;
+      
+      loadScript.call(this);
+    }
+    
+    if(typeof(opts) !== 'object')
+      return;
+    
+    setDefaults.call(this,defaults,opts);
+    configure.call(this,opts);
+    
+  }
+  
+  /* Load ScriptLoader.scripts[offset] script */
+  function loadScript(offset){
+    var scriptLoader = this;
+    if(offset === undefined)
+      offset = 0;
+    var script = this.scripts[offset];
+    if(script === undefined){
+      this.inProgress = false;
+      return;      
+    }
 
+  
+    if(script.loaded === true)
+      return;
+    
+    script.loaded = true;
+    const patterns = {
+      css: [
+        new RegExp(/\.css/),
+        new RegExp(/fonts.googleapis.com/)
+      ],
+      js: [
+          new RegExp(/\.js/),
+          new RegExp(/player_api/),
+          new RegExp(/gtag\/js/)
+      ]
+    };
+    var css = false;
+    var js = false;
+    patterns.css.forEach(function(pattern){
+      if(pattern.test(script.src)){
+        css = true;
+        return;
+      }
+    });
+    
+    if(css !== true){
+      patterns.js.forEach(function(pattern){
+        if(pattern.test(script.src)){
+          js = true;
+          return;
+        }
+      });
+    }
+    if(css === false && js === false){
+      loadScript.call(this,offset +1);
+      return;
+    }
+
+    if(css === true){
+      var element = document.createElement('link');
+      element.href = script.src;
+      element.rel = 'stylesheet';
+      element.media = 'all';
+      document.head.appendChild(element);
+      
+    }else{
+      var element = document.createElement('script');
+      element.src = script.src;
+      element.type = "text/javascript";
+      element.async = true;
+      document.body.appendChild(element);     
+    }
+    element.onload = function(){
+        if(typeof(script.callback) === 'function')
+          script.callback();
+        loadScript.call(scriptLoader,offset + 1);
+      
+    }
+   
+  }
+    /* Define opts by defaults */
+    function setDefaults(defaults,opts){
+      for(var key in defaults){
+        if(!has.call(opts,key)){
+          opts[key] = defaults[key]
         }
       }
-      else if (pattcss.test(tab[index]))
-      {
-        var lien   = document.createElement('link');
-        lien.href   = tab[index];
-        lien.rel = "stylesheet";
-        lien.media = "all";;
-        document.head.appendChild(lien);
-        lien.onload = function()
-        {
-          var ind = index+1;
-          loadScript(tab,ind,call);
-          if(typeof(tmp_callback) === "function")
-            tmp_callback();
+    }
+    /* Configure object with options */
+    function configure(opts){ 
+      for(var key in opts){
+        if(has.call(defaults,key)){
+          if(key === 'scripts'){
+          
+            this.add(opts[key]);
+          } else{
+            this[key] = opts[key]                  
+          }
         }
-      }  
-      else
-      {
-        var ind = index+1;
-        loadScript(tab,ind,call);
       }
     }
-  }
-  else
-  {
-    if(typeof(call) === "function")
-    {
-      call();
+  
+  /* object send has key */
+  function has(key){
+
+    for(var _key in this){
+      if(_key === key)
+        return true;
     }
+    return false;
   }
-}
+})()
