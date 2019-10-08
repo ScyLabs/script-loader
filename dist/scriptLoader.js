@@ -6,7 +6,8 @@
     src: null,
     callback : null,
     loaded : false,
-    require: []
+    require: [],
+    parent : false
   }
   /* ScriptLoader pattern */
   const defaults = {
@@ -46,6 +47,7 @@
             require.sources.forEach(function(source){
               var objScript = {
                 src: source,
+                parent :true
               }
               scriptLoader.add(objScript);
             }) 
@@ -58,6 +60,7 @@
     }
     
     
+   
     /* Object has script */
     this.has = function(script){
       /* Object comparaison */
@@ -92,6 +95,7 @@
     
   }
   
+  
   /* Load ScriptLoader.scripts[offset] script */
   function loadScript(offset){
     var scriptLoader = this;
@@ -102,7 +106,6 @@
       this.inProgress = false;
       return;      
     }
-
   
     if(script.loaded === true)
       return;
@@ -155,13 +158,15 @@
       element.async = true;
       document.body.appendChild(element);     
     }
+    if(script.parent === false){
+      loadScript.call(scriptLoader,offset + 1);
+      return;
+    }
     element.onload = function(){
         if(typeof(script.callback) === 'function')
           script.callback();
         loadScript.call(scriptLoader,offset + 1);
-      
     }
-   
   }
     /* Define opts by defaults */
     function setDefaults(defaults,opts){

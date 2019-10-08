@@ -49,7 +49,7 @@ When you add requirements , theys sources loaded before your script.
 ```javascript
     scriptLoader.add({
         src: "js/toto.js",
-        requirements: [
+        require: [
             {
                 name: "owlCarousel",
                 sources: [
