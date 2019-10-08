@@ -14,7 +14,7 @@ bower install santanas2b/script-loader
 
 ### Load the javascript in your html 
 ```html
-<script src="bower_components/script-loader/dist/scriptLoader.min.js" type="text/javascript"></script>
+<script src="path_to_script_loader_folter/dist/scriptLoader.min.js" type="text/javascript"></script>
 ```
 ### Initialize scriptLoader object
 ```javascript
