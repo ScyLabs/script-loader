@@ -46,11 +46,7 @@
           // Load requirements
           script.require.forEach(function(require){
             require.sources.forEach(function(source){
-              var objScript = {
-                src: source,
-                parent :true
-              }
-              scriptLoader.add(objScript);
+              scriptLoader.add(source);
             }) 
           })
         }
@@ -81,9 +77,8 @@
     /* load Alls scripts not loaded */
     this.load = function(){
       
-      if(this.scripts.length === 0 || this.inProgress === true){
+      if(this.scripts.length === 0 || this.inProgress === true)
         return;
-      }
       this.inProgress = true;
       
       loadScript.call(this);
@@ -100,21 +95,17 @@
   
   /* Load ScriptLoader.scripts[offset] script */
   function loadScript(offset){
-
     var scriptLoader = this;
     if(offset === undefined)
       offset = 0;
     var script = this.scripts[offset];
-    
     if(script === undefined){
       this.inProgress = false;
       return;      
     }
   
-    if(script.loaded === true){
-      loadScript.call(scriptLoader,offset + 1);
+    if(script.loaded === true)
       return;
-    }
     
     script.loaded = true;
     const patterns = {
@@ -149,18 +140,16 @@
       loadScript.call(this,offset +1);
       return;
     }
-    if(script.preload){
-      var preload = document.createElement('link');
-        preload.rel = "preload";
-        preload.as = (css === true) ? "style" : 'script';
-        preload.href = script.src;
-        document.head.appendChild(preload);
-    }
+
     if(css === true){
       var element = document.createElement('link');
       element.href = script.src;
       element.rel = 'stylesheet';
       element.media = 'all';
+      if(script.preload)  {
+        element.rel = "preload";
+        element.as = "style";
+      }
       document.head.appendChild(element);
       
     }else{
@@ -173,16 +162,20 @@
       element.src = script.src;
       element.type = "text/javascript";
       element.async = true;
+      if(script.preload){
+        element.rel = "preload";
+        element.as = "script"
+      }
+        
       document.body.appendChild(element);     
-    }
-    if(typeof(script.callback) === 'function'){
-      element.onload = script.callback;
     }
     if(script.parent === false){
       loadScript.call(scriptLoader,offset + 1);
       return;
     }
     element.onload = function(){
+        if(typeof(script.callback) === 'function')
+          script.callback();
         loadScript.call(scriptLoader,offset + 1);
     }
   }
