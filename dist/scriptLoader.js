@@ -46,6 +46,7 @@
           // Load requirements
           script.require.forEach(function(require){
             require.sources.forEach(function(source){
+              source.parent = true;
               scriptLoader.add(source);
             }) 
           })
