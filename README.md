@@ -61,6 +61,7 @@ When you add requirements , theys sources loaded before your script.
                                 sources: [
                                     {
                                         src:"https://ajax.googleapis.com/ajax/libs/d3js/5.12.0/d3.min.js",
+                                        preload: true
                                     }
                                 ]
                             }
