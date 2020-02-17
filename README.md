@@ -54,21 +54,22 @@ When you add requirements , theys sources loaded before your script.
                 name: "owlCarousel",
                 sources: [
                     {
+                        src: "css/owl.css",
+                        preload: true
+                    },
+                    {
                         src: "js/owl.js",
                         require: [
                             {
                                 name: "jQuery",
                                 sources: [
                                     {
-                                        src:"https://ajax.googleapis.com/ajax/libs/d3js/5.12.0/d3.min.js",
-                                        preload: true
+                                        src:"https://ajax.googleapis.com/ajax/libs/d3js/5.12.0/d3.min.js"
+                                       
                                     }
                                 ]
                             }
                         ]
-                    },
-                    {
-                        src: "css/owl.css",
                     }
                 ]
             }
